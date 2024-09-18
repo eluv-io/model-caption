@@ -1,0 +1,8 @@
+weights: models/object_detection/caption/git-large-textcaps
+device: cuda
+
+runtime:
+  default:
+    freq: 8
+    ipt_rgb: true
+    allow_single_frame: true
