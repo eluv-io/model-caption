@@ -14,7 +14,8 @@ RUN \
     conda install -y cudatoolkit=10.1 cudnn=7 nccl && \
     conda install -y -c conda-forge ffmpeg-python
 
-COPY . .
+COPY caption ./caption
+COPY config.yml run.py setup.py config.py .
 
 RUN /opt/conda/envs/caption/bin/pip install .
 
