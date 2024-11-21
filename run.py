@@ -33,6 +33,7 @@ def run(video_paths: List[str], runtime_config: str=None):
         os.makedirs(tags_out)
     model = CaptionModel(runtime_config["ipt_rgb"], config["weights"])
     for fname in files:
+        logger.info(f"Tagging video: {fname}")
         ftags, vtags = model.tag_video(fname, runtime_config["allow_single_frame"], runtime_config["freq"])
         with open(os.path.join(tags_out, f"{os.path.basename(fname).split('.')[0]}_tags.json"), 'w') as fout:
             fout.write(json.dumps([asdict(tag) for tag in vtags]))

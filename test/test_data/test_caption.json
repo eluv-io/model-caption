@@ -1,69 +1,5 @@
 [
     [
-        [
-            {
-                "start_time": 0,
-                "end_time": 42,
-                "text": "a man in a purple shirt is shaking hands with another man.",
-                "confidence": null
-            },
-            {
-                "start_time": 13892,
-                "end_time": 13934,
-                "text": "a purple car .",
-                "confidence": null
-            },
-            {
-                "start_time": 20023,
-                "end_time": 20065,
-                "text": "a group of people are gathered around a blue car.",
-                "confidence": null
-            },
-            {
-                "start_time": 26029,
-                "end_time": 26071,
-                "text": "a man driving a car .",
-                "confidence": null
-            }
-        ],
-        [
-            {
-                "start_time": 0,
-                "end_time": 42,
-                "text": "a person is driving a car and the driver is wearing a white shirt.",
-                "confidence": null
-            },
-            {
-                "start_time": 6006,
-                "end_time": 6048,
-                "text": "a black car with a license plate .",
-                "confidence": null
-            },
-            {
-                "start_time": 10177,
-                "end_time": 10219,
-                "text": "a blurry picture of a car that has a red light on it.",
-                "confidence": null
-            },
-            {
-                "start_time": 12471,
-                "end_time": 12513,
-                "text": "a red car is driving under a bridge .",
-                "confidence": null
-            },
-            {
-                "start_time": 17476,
-                "end_time": 17518,
-                "text": "a silver car is driving down a street with a red light on the front of it.",
-                "confidence": null
-            },
-            {
-                "start_time": 25775,
-                "end_time": 25817,
-                "text": "a man sitting in a car with a tag on his shirt.",
-                "confidence": null
-            }
-        ],
         {
             "0": [
                 {
@@ -114,6 +50,32 @@
                 }
             ]
         },
+        [
+            {
+                "start_time": 0,
+                "end_time": 42,
+                "text": "a man in a purple shirt is shaking hands with another man.",
+                "confidence": null
+            },
+            {
+                "start_time": 13892,
+                "end_time": 13934,
+                "text": "a purple car .",
+                "confidence": null
+            },
+            {
+                "start_time": 20023,
+                "end_time": 20065,
+                "text": "a group of people are gathered around a blue car.",
+                "confidence": null
+            },
+            {
+                "start_time": 26029,
+                "end_time": 26071,
+                "text": "a man driving a car .",
+                "confidence": null
+            }
+        ],
         {
             "0": [
                 {
@@ -187,6 +149,44 @@
                     "confidence": 1.0
                 }
             ]
-        }
+        },
+        [
+            {
+                "start_time": 0,
+                "end_time": 42,
+                "text": "a person is driving a car and the driver is wearing a white shirt.",
+                "confidence": null
+            },
+            {
+                "start_time": 6006,
+                "end_time": 6048,
+                "text": "a black car with a license plate .",
+                "confidence": null
+            },
+            {
+                "start_time": 10177,
+                "end_time": 10219,
+                "text": "a blurry picture of a car that has a red light on it.",
+                "confidence": null
+            },
+            {
+                "start_time": 12471,
+                "end_time": 12513,
+                "text": "a red car is driving under a bridge .",
+                "confidence": null
+            },
+            {
+                "start_time": 17476,
+                "end_time": 17518,
+                "text": "a silver car is driving down a street with a red light on the front of it.",
+                "confidence": null
+            },
+            {
+                "start_time": 25775,
+                "end_time": 25817,
+                "text": "a man sitting in a car with a tag on his shirt.",
+                "confidence": null
+            }
+        ]
     ]
 ]

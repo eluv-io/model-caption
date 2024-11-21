@@ -3,6 +3,6 @@ device: cuda
 
 runtime:
   default:
-    freq: 8
+    freq: 4
     ipt_rgb: true
     allow_single_frame: true

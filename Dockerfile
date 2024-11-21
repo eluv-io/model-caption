@@ -19,4 +19,6 @@ COPY config.yml run.py setup.py config.py .
 
 RUN /opt/conda/envs/caption/bin/pip install .
 
+COPY models ./models
+
 ENTRYPOINT ["/opt/conda/envs/caption/bin/python", "run.py"]
