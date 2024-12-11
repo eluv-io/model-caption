@@ -44,4 +44,4 @@ class CaptionModel(FrameModel):
             if search_res is not None:
                 generated_caption = generated_caption[:search_res.span()[0]] + "."
                 break
-        return [FrameTag(text=generated_caption, confidence=1.0, box=(0.05, 0.05, 0.95, 0.95))]
+        return [FrameTag.from_dict({"text": generated_caption, "confidence": 1.0, "box": {"x1": 0.05, "y1": 0.05, "x2": 0.95, "y2": 0.95}})]
