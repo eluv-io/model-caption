@@ -2,63 +2,28 @@
 import argparse
 import os
 import json
-from loguru import logger
-from marshmallow import Schema, fields, ValidationError
 from typing import List
-from dataclasses import asdict, dataclass
 from common_ml.utils import nested_update
-from common_ml.types import Data
+from common_ml.model import default_tag
 
 from caption.model import CaptionModel
 from config import config
 
-@dataclass
-class RuntimeConfig(Data):
-    fps: int
-    ipt_rgb: bool
-    allow_single_frame: bool
-    class Schema(Schema):
-        fps = fields.Int(required=True)
-        ipt_rgb = fields.Bool(required=True)
-        allow_single_frame = fields.Bool(required=True)
-
-    @staticmethod
-    def from_dict(data: dict) -> 'RuntimeConfig':
-        return RuntimeConfig(**data)
-
-def run(video_paths: List[str], runtime_config: str=None):
-    files = video_paths
+# Generate tag files from a list of video/image files and a runtime config
+# Runtime config follows the schema found in caption.model.RuntimeConfig
+def run(file_paths: List[str], runtime_config: str=None):
     if runtime_config is None:
         cfg = config["runtime"]["default"]
     else:
-        if runtime_config.endswith('.json'):
-            with open(runtime_config, 'r') as fin:
-                cfg = json.load(fin)
-        else:
-            cfg = json.loads(runtime_config)
+        cfg = json.loads(runtime_config)
         cfg = nested_update(config["runtime"]["default"], cfg)
-    try:
-        runtime_config = RuntimeConfig.from_dict(cfg)
-    except ValidationError as e:
-        logger.error("Received invalid runtime config.")
-        raise e
-    filedir = os.path.dirname(os.path.abspath(__file__))
-    tags_out = os.getenv('TAGS_PATH', os.path.join(filedir, 'tags'))
-    if not os.path.exists(tags_out):
-        os.makedirs(tags_out)
-    model = CaptionModel(runtime_config.ipt_rgb, config["weights"])
-    for fname in files:
-        logger.info(f"Tagging video: {fname}")
-        ftags, vtags = model.tag_video(fname, runtime_config.allow_single_frame, runtime_config.fps)
-        with open(os.path.join(tags_out, f"{os.path.basename(fname).split('.')[0]}_tags.json"), 'w') as fout:
-            fout.write(json.dumps([asdict(tag) for tag in vtags]))
-        with open(os.path.join(tags_out, f"{os.path.basename(fname).split('.')[0]}_frametags.json"), 'w') as fout:
-            ftags = {k: [asdict(tag) for tag in v] for k, v in ftags.items()}
-            fout.write(json.dumps(ftags))
+    model = CaptionModel(config["weights"], config=cfg)
+    out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tags')
+    default_tag(model, file_paths, out_path)
         
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('video_paths', nargs='+', type=str)
+    parser.add_argument('file_paths', nargs='+', type=str)
     parser.add_argument('--config', type=str, required=False)
     args = parser.parse_args()
-    run(args.video_paths, args.config)
+    run(args.file_paths, args.config)
