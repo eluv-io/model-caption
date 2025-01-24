@@ -46,7 +46,7 @@ class CaptionModel(FrameModel):
         if isinstance(img, str):
             img = Image.open(img).convert("RGB")
         elif isinstance(img, np.ndarray):
-            img = Image.fromarray(img[:, :, ::-1])
+            img = Image.fromarray(img)
             if not self.config.ipt_rgb:
                 img = img.convert("RGB")
         pixel_values = self.caption_processor(images=img, return_tensors="pt").pixel_values.to(self.device)
