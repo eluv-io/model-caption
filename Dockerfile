@@ -14,11 +14,6 @@ RUN \
     conda install -y cudatoolkit=10.1 cudnn=7 nccl && \
     conda install -y -c conda-forge ffmpeg-python
 
-COPY caption ./caption
-COPY config.yml run.py setup.py config.py .
-
-COPY models ./models
-
 # Create the SSH directory and set correct permissions
 RUN mkdir -p /root/.ssh && chmod 700 /root/.ssh
 
@@ -28,6 +23,14 @@ RUN ssh-keyscan -t rsa github.com >> /root/.ssh/known_hosts
 ARG SSH_AUTH_SOCK
 ENV SSH_AUTH_SOCK ${SSH_AUTH_SOCK}
 
+COPY setup.py .
+RUN mkdir caption
+
 RUN /opt/conda/envs/caption/bin/pip install .
 
-ENTRYPOINT ["/opt/conda/envs/caption/bin/python", "run.py"]
+COPY models ./models
+
+COPY config.yml run.py config.py .
+COPY caption ./caption
+
+ENTRYPOINT ["/opt/conda/envs/caption/bin/python", "run.py"]FROM continuumio/miniconda3:latest

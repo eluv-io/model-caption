@@ -1,5 +1,8 @@
-weights: models/object_detection/caption/git-large-textcaps
+weights: models/caption/git-large-textcaps
 device: cuda
+
+storage:
+  model_path: /ml/models/object_detection/
 
 runtime:
   default:
