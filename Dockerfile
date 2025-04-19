@@ -27,7 +27,7 @@ RUN /opt/conda/envs/mlpod/bin/pip install .
 
 COPY models ./models
 
-COPY config.yml model-caption.py config.py .
+COPY config.yml run.py config.py .
 COPY caption ./caption
 
-ENTRYPOINT ["/opt/conda/envs/mlpod/bin/python", "model-caption.py"]
+ENTRYPOINT ["/opt/conda/envs/mlpod/bin/python", "run.py"]
