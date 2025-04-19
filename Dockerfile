@@ -2,17 +2,14 @@ FROM continuumio/miniconda3:latest
 
 WORKDIR /elv
 
-RUN apt-get update && apt-get install -y build-essential \
-    && apt-get install -y ffmpeg
+RUN conda create -n mlpod python=3.8 -y
 
-RUN \
-   conda create -n caption python=3.8 -y
+RUN apt-get update && apt-get install -y build-essential && apt-get install -y ffmpeg
 
-SHELL ["conda", "run", "-n", "caption", "/bin/bash", "-c"]
+SHELL ["conda", "run", "-n", "mlpod", "/bin/bash", "-c"]
 
-RUN \
-    conda install -y cudatoolkit=10.1 cudnn=7 nccl && \
-    conda install -y -c conda-forge ffmpeg-python
+RUN conda install -y cudatoolkit=10.1 cudnn=7 nccl
+RUN conda install -y -c conda-forge ffmpeg-python
 
 # Create the SSH directory and set correct permissions
 RUN mkdir -p /root/.ssh && chmod 700 /root/.ssh
@@ -26,11 +23,11 @@ ENV SSH_AUTH_SOCK ${SSH_AUTH_SOCK}
 COPY setup.py .
 RUN mkdir caption
 
-RUN /opt/conda/envs/caption/bin/pip install .
+RUN /opt/conda/envs/mlpod/bin/pip install .
 
 COPY models ./models
 
-COPY config.yml run.py config.py .
+COPY config.yml model-caption.py config.py .
 COPY caption ./caption
 
-ENTRYPOINT ["/opt/conda/envs/caption/bin/python", "run.py"]FROM continuumio/miniconda3:latest
+ENTRYPOINT ["/opt/conda/envs/mlpod/bin/python", "model-caption.py"]
