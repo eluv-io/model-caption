@@ -16,6 +16,6 @@ MODEL_PATH=$(yq -r .storage.model_path $SCRIPT_PATH/config.yml)
 
 mkdir -p $SCRIPT_PATH/models
 
-rsync --progress --update --times --recursive --links --delete $MODEL_PATH/ $SCRIPT_PATH/models
+rsync --progress --update --times --recursive --links --delete $MODEL_PATH/ $SCRIPT_PATH/models/
 
 podman build --format docker -t caption . --network host --build-arg SSH_AUTH_SOCK=/tmp/ssh-auth-sock --volume "${SSH_AUTH_SOCK}:/tmp/ssh-auth-sock"

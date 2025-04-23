@@ -21,6 +21,7 @@ setup(
         'argparse==1.4.0',
         'transformers==4.26.1',
         'loguru',
+        'setproctitle',
         'common_ml @ git+ssh://git@github.com/qluvio/common-ml.git#egg=common_ml',
         'quick_test_py @ git+https://github.com/elv-nickB/quick_test_py.git#egg=quick_test_py'
     ]
