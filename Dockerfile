@@ -11,6 +11,8 @@ SHELL ["conda", "run", "-n", "mlpod", "/bin/bash", "-c"]
 RUN conda install -y cudatoolkit=10.1 cudnn=7 nccl
 RUN conda install -y -c conda-forge ffmpeg-python
 
+COPY models ./models
+
 # Create the SSH directory and set correct permissions
 RUN mkdir -p /root/.ssh && chmod 700 /root/.ssh
 
@@ -24,8 +26,6 @@ COPY setup.py .
 RUN mkdir caption
 
 RUN /opt/conda/envs/mlpod/bin/pip install .
-
-COPY models ./models
 
 COPY config.yml run.py config.py .
 COPY caption ./caption
