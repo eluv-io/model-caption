@@ -39,7 +39,7 @@ if __name__ == '__main__':
     setproctitle.setproctitle("model-caption")
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('file_paths', nargs='*', type=str, help='Input file paths')
+    parser.add_argument('file_paths', nargs='*', type=str, help='Input file paths', default=[])
     parser.add_argument('--config', type=str, required=False, help='Runtime configuration JSON')
     parser.add_argument('--live', action='store_true', help='Run in live mode (read files from stdin)')
     

@@ -30,4 +30,4 @@ COPY models ./models
 COPY config.yml run.py config.py .
 COPY caption ./caption
 
-ENTRYPOINT ["/opt/conda/envs/mlpod/bin/python", "run.py"]
+ENTRYPOINT ["/opt/conda/envs/mlpod/bin/python", "-u", "run.py"]
