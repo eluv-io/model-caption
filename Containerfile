@@ -6,8 +6,6 @@ RUN conda create -n mlpod python=3.8 -y
 
 RUN apt-get update && apt-get install -y build-essential && apt-get install -y ffmpeg
 
-SHELL ["conda", "run", "-n", "mlpod", "/bin/bash", "-c"]
-
 RUN conda install -y cudatoolkit=10.1 cudnn=7 nccl
 RUN conda install -y -c conda-forge ffmpeg-python
 
@@ -25,7 +23,7 @@ ENV SSH_AUTH_SOCK ${SSH_AUTH_SOCK}
 COPY setup.py .
 RUN mkdir caption
 
-RUN /opt/conda/envs/mlpod/bin/pip install .
+RUN --mount=type=ssh conda run -n mlpod /opt/conda/envs/mlpod/bin/pip install .
 
 COPY config.yml run.py config.py .
 COPY caption ./caption
