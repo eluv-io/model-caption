@@ -1,4 +1,6 @@
 models/*
 zz-cache/*
 test_output/*
-
+tags
+*.egg-info
+__pycache__
