@@ -3,9 +3,3 @@ device: cuda
 
 storage:
   model_path: /ml/models/object_detection/
-
-runtime:
-  default:
-    fps: 1
-    ipt_rgb: true
-    allow_single_frame: true

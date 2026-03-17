@@ -1,52 +1,70 @@
 import argparse
-import os
-import json
-from typing import List, Optional
+from typing import List
+from loguru import logger
 import setproctitle
+import re
+import json
+import numpy as np
+from dataclasses import dataclass
+from dacite import from_dict
+from transformers import AutoProcessor, AutoModelForCausalLM
+from PIL import Image
 
-from common_ml.utils import nested_update
-from common_ml.model import default_tag, run_live_mode
-from caption.model import CaptionModel
+from common_ml.tagging.models.frame_based import FrameModel
+from common_ml.tagging.models.tag_types import FrameTag
+
 from config import config
 
-def get_runtime_config(runtime_config: Optional[str] = None):
-    """Get the runtime configuration, merging with defaults if provided"""
-    if runtime_config is None:
-        return config["runtime"]["default"]
-    else:
-        cfg = json.loads(runtime_config)
-        return nested_update(config["runtime"]["default"], cfg)
+class CaptionModel(FrameModel):
+    def __init__(self, weights: str):
+        logger.info("loading caption model")
+        self.caption_model = AutoModelForCausalLM.from_pretrained(weights)
+        self.caption_processor = AutoProcessor.from_pretrained(weights)
+        self.device = 'cuda'
+        self.caption_model = self.caption_model.to(self.device)
 
-def run(file_paths: List[str], runtime_config: Optional[str] = None):
-    """Generate tag files from a list of video/image files and a runtime config"""
-    cfg = get_runtime_config(runtime_config)
-    model = CaptionModel(config["weights"], config=cfg)
-    out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tags')
-    default_tag(model, file_paths, out_path)
-
-def get_tag_fn(runtime_config: Optional[str] = None):
-    """Create a tag function with the specified configuration"""
-    cfg = get_runtime_config(runtime_config)
-    model = CaptionModel(config["weights"], config=cfg)
-    out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tags')
-    
-    def tag_fn(file_paths: List[str]):
-        default_tag(model, file_paths, out_path)
-    
-    return tag_fn
+        self.patterns = [
+            r"(with|and)\s(a|the)\s(words*|letters*|numbers*)",
+            r"that\s(have|has)\s(a|the)\s(words*|letters*|numbers*)",
+            r"with\s(a|the)\ssign",
+            r"that\ssays+"
+        ]
         
+    def tag(self, img: np.ndarray) -> List[FrameTag]: 
+        img = Image.fromarray(img)
+        pixel_values = self.caption_processor(images=img, return_tensors="pt").pixel_values.to(self.device)
+        generated_ids = self.caption_model.generate(pixel_values=pixel_values, max_length=50, num_beams=4).cpu()
+        generated_caption = self.caption_processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
+
+        for pat in self.patterns:
+            search_res = re.search(pat, generated_caption)
+            if search_res is not None:
+                generated_caption = generated_caption[:search_res.span()[0]] + "."
+                break
+
+        return [FrameTag(tag=generated_caption, box={"x1": 0.05, "y1": 0.05, "x2": 0.95, "y2": 0.95})]
+    
+@dataclass
+class RuntimeConfig:
+    fps: float = 1.0
+    continue_on_error: bool = False
+
+def _parse_config_string(config_str: str) -> RuntimeConfig:
+    try:
+        config_dict = json.loads(config_str)
+        return from_dict(RuntimeConfig, config_dict)
+    except json.JSONDecodeError as e:
+        logger.error(f"Failed to parse config string: {e}")
+        raise
+
 if __name__ == '__main__':
     setproctitle.setproctitle("model-caption")
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('file_paths', nargs='*', type=str, help='Input file paths', default=[])
-    parser.add_argument('--config', type=str, required=False, help='Runtime configuration JSON')
-    parser.add_argument('--live', action='store_true', help='Run in live mode (read files from stdin)')
+    parser.add_argument('--output-path', required=True, type=str, help='Output path (.jsonl)')
+    parser.add_argument('--params', type=str, required=False, help='Runtime parameters as JSON')
     
     args = parser.parse_args()
     
-    if args.live:
-        tag_fn = get_tag_fn(args.config)
-        run_live_mode(tag_fn)
-    else:
-        run(args.file_paths, args.config)
+    params = _parse_config_string(args.params) if args.params else RuntimeConfig()
+    model = CaptionModel(weights=config["model_weights"])

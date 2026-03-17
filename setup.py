@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name="caption",
     version="0.1",
-    packages=['caption'],
+    packages=['src'],
     install_requires=[
         'opencv-python==4.2.0.34',
         'torch==1.9.0',
@@ -22,6 +22,7 @@ setup(
         'transformers==4.26.1',
         'loguru',
         'setproctitle',
-        'common_ml @ git+https://github.com/eluv-io/common-ml.git#egg=common_ml',
+        'dacite',
+        'common_ml @ git+https://github.com/eluv-io/common-ml.git@new-model-protocol#egg=common_ml',
     ]
 )
