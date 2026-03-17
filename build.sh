@@ -12,10 +12,10 @@ fi
 set -e
 
 SCRIPT_PATH="$(dirname "$(realpath "$0")")"
-MODEL_PATH=$(yq -r .storage.model_path $SCRIPT_PATH/config.yml)
+MODEL_PATH=$(yq -r .model_path $SCRIPT_PATH/config.yml)
 
 mkdir -p $SCRIPT_PATH/models
 
 rsync --progress --update --times --recursive --links --delete $MODEL_PATH/ $SCRIPT_PATH/models/
 
-buildscripts/build_container.bash -t "caption:${IMAGE_TAG:-latest}" -f Containerfile .
+#buildscripts/build_container.bash -t "caption:${IMAGE_TAG:-latest}" -f Containerfile .

@@ -13,7 +13,7 @@ from PIL import Image
 from common_ml.tagging.models.frame_based import FrameModel
 from common_ml.tagging.models.tag_types import FrameTag
 
-from config import config
+WEIGHTS_DIR = "models/caption/git-large-textcaps"
 
 class CaptionModel(FrameModel):
     def __init__(self, weights: str):
@@ -29,8 +29,8 @@ class CaptionModel(FrameModel):
             r"with\s(a|the)\ssign",
             r"that\ssays+"
         ]
-        
-    def tag(self, img: np.ndarray) -> List[FrameTag]: 
+
+    def tag_frame(self, img: np.ndarray) -> List[FrameTag]: 
         img = Image.fromarray(img)
         pixel_values = self.caption_processor(images=img, return_tensors="pt").pixel_values.to(self.device)
         generated_ids = self.caption_model.generate(pixel_values=pixel_values, max_length=50, num_beams=4).cpu()
@@ -67,4 +67,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     params = _parse_config_string(args.params) if args.params else RuntimeConfig()
-    model = CaptionModel(weights=config["model_weights"])
+    model = CaptionModel(weights=WEIGHTS_DIR)

@@ -1,5 +1,1 @@
-weights: models/caption/git-large-textcaps
-device: cuda
-
-storage:
-  model_path: /ml/models/object_detection/
+model_path: /ml/models/object_detection
