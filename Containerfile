@@ -21,11 +21,11 @@ ARG SSH_AUTH_SOCK
 ENV SSH_AUTH_SOCK ${SSH_AUTH_SOCK}
 
 COPY setup.py .
-RUN mkdir caption
+RUN mkdir src
 
 RUN --mount=type=ssh conda run -n mlpod /opt/conda/envs/mlpod/bin/pip install .
 
-COPY config.yml run.py config.py .
-COPY caption ./caption
+COPY config.yml run.py .
+COPY src ./src
 
 ENTRYPOINT ["/opt/conda/envs/mlpod/bin/python", "-u", "run.py"]

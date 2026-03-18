@@ -18,4 +18,4 @@ mkdir -p $SCRIPT_PATH/models
 
 rsync --progress --update --times --recursive --links --delete $MODEL_PATH/ $SCRIPT_PATH/models/
 
-#buildscripts/build_container.bash -t "caption:${IMAGE_TAG:-latest}" -f Containerfile .
+buildscripts/build_container.bash -t "caption:${IMAGE_TAG:-latest}" -f Containerfile .

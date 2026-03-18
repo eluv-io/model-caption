@@ -4,3 +4,6 @@ test_output/*
 tags
 *.egg-info
 __pycache__
+.vscode
+test-output
+version

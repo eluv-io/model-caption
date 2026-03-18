@@ -12,6 +12,7 @@ from PIL import Image
 
 from common_ml.tagging.models.frame_based import FrameModel
 from common_ml.tagging.models.tag_types import FrameTag
+from common_ml.tagging.run_helpers import start_loop_from_frame_model
 
 WEIGHTS_DIR = "models/caption/git-large-textcaps"
 
@@ -43,7 +44,7 @@ class CaptionModel(FrameModel):
                 break
 
         return [FrameTag(tag=generated_caption, box={"x1": 0.05, "y1": 0.05, "x2": 0.95, "y2": 0.95})]
-    
+
 @dataclass
 class RuntimeConfig:
     fps: float = 1.0
@@ -68,3 +69,5 @@ if __name__ == '__main__':
     
     params = _parse_config_string(args.params) if args.params else RuntimeConfig()
     model = CaptionModel(weights=WEIGHTS_DIR)
+
+    start_loop_from_frame_model(model, args.output_path, fps=params.fps, continue_on_error=params.continue_on_error)
