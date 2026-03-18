@@ -23,6 +23,6 @@ setup(
         'loguru',
         'setproctitle',
         'dacite',
-        'common_ml @ git+https://github.com/eluv-io/common-ml.git@new-model-protocol#egg=common_ml',
+        'common_ml @ git+https://github.com/eluv-io/common-ml.git#egg=common_ml',
     ]
 )
