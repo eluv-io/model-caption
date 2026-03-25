@@ -12,7 +12,7 @@ from PIL import Image
 
 from common_ml.tagging.models.frame_based import FrameModel
 from common_ml.tagging.models.tag_types import FrameTag
-from common_ml.tagging.run_helpers import start_loop_from_frame_model
+from common_ml.tagging.run_helpers import run_default, catch_errors, get_params
 
 WEIGHTS_DIR = "models/caption/git-large-textcaps"
 
@@ -50,24 +50,13 @@ class RuntimeConfig:
     fps: float = 1.0
     continue_on_error: bool = False
 
-def _parse_config_string(config_str: str) -> RuntimeConfig:
-    try:
-        config_dict = json.loads(config_str)
-        return from_dict(RuntimeConfig, config_dict)
-    except json.JSONDecodeError as e:
-        logger.error(f"Failed to parse config string: {e}")
-        raise
-
 if __name__ == '__main__':
     setproctitle.setproctitle("model-caption")
-    
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--output-path', required=True, type=str, help='Output path (.jsonl)')
-    parser.add_argument('--params', type=str, required=False, help='Runtime parameters as JSON')
-    
-    args = parser.parse_args()
-    
-    params = _parse_config_string(args.params) if args.params else RuntimeConfig()
+
+    catch_errors()
+    params = get_params()
+    params = from_dict(RuntimeConfig, params)
+
     model = CaptionModel(weights=WEIGHTS_DIR)
 
-    start_loop_from_frame_model(model, args.output_path, fps=params.fps, continue_on_error=params.continue_on_error)
+    run_default(model, fps=params.fps, continue_on_error=params.continue_on_error)
